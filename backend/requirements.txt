@@ -1,0 +1,12 @@
+fastapi==0.111.0
+uvicorn[standard]
+SQLAlchemy>=2.0.0
+passlib[bcrypt]
+bcrypt>=4.0.1,<5
+python-jose[cryptography]
+pydantic-settings
+PyMySQL
+python-multipart
+httpx>=0.23.0
+jinja2>=3.1.2
+email-validator>=2.1.0

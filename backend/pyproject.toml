@@ -1,0 +1,19 @@
+[project]
+name = "media-backend"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi[all]==0.111.0",
+  "uvicorn[standard]",
+  "SQLAlchemy>=2.0.0",
+  "passlib[bcrypt]",
+  "python-jose[cryptography]",
+  "pydantic-settings",
+  "PyMySQL",
+  "python-multipart",
+]
+
+[tool.uvicorn]
+host = "0.0.0.0"
+port = 8000
+factory = false
