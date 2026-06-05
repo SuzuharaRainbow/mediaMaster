@@ -1,0 +1,32 @@
+# Node / frontend
+frontend/node_modules/
+frontend/.vite/
+frontend/dist/
+frontend-dev/
+
+# Python / backend
+backend/.venv/
+backend/__pycache__/
+backend/**/*.pyc
+backend/**/*.pyo
+
+# Runtime data
+infra/data/
+media-data/
+minio-data/
+pgdata/
+node-v*/  # downloaded Node archive directories
+
+# Env & credentials
+.env*
+!.env*.example
+infra/backend.env
+infra/frontend.env
+
+# OS / tooling
+.DS_Store
+Thumbs.db
+*.log
+
+# Misc
+*.py[cod]

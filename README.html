@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SuzuharaAPP 说明文档</title>
+  <style>
+    body{font:14px/1.6 -apple-system,system-ui,Segoe UI,Roboto,Helvetica,Arial,PingFang SC,Microsoft Yahei,sans-serif;max-width:980px;margin:32px auto;padding:0 16px;color:#222}
+    code, pre {background:#f6f8fa;border-radius:6px}
+    code{padding:2px 6px}
+    pre{padding:12px;overflow:auto}
+    h1,h2{margin-top:28px}
+    ul{margin:8px 0 16px 18px}
+    .k{color:#555}
+  </style>
+  </head>
+<body>
+  <h1>SuzuharaAPP 全栈媒体管理应用</h1>
+  <p class="k">后端 FastAPI + PostgreSQL，存储 MinIO(S3 兼容)，前端 React(Vite)。一键 <code>docker-compose</code> 运行，支持直传到对象存储、预签名播放链接、用户/管理员权限。</p>
+
+  <h2>项目结构</h2>
+  <ul>
+    <li><code>docker-compose.yml</code>：编排 MinIO、PostgreSQL、后端 API、前端 Web。</li>
+    <li><code>.env.dev</code> / <code>.env.prod.example</code>：后端环境变量（本地/生产样例）。</li>
+    <li><code>backend/</code>
+      <ul>
+        <li><code>Dockerfile</code>：后端镜像</li>
+        <li><code>app/main.py</code>：FastAPI 入口，挂载路由与 CORS</li>
+        <li><code>app/auth/routes.py</code>：登录与初始化管理员</li>
+        <li><code>app/media/routes.py</code>：媒体上传凭证、创建、列表、详情、删除</li>
+        <li><code>app/db.py</code>：SQLAlchemy 引擎与建表</li>
+        <li><code>app/deps.py</code>：配置、JWT、鉴权依赖</li>
+        <li><code>app/storage/*.py</code>：S3/MinIO 封装（预签名上传/下载）</li>
+      </ul>
+    </li>
+    <li><code>frontend/</code>
+      <ul>
+        <li><code>index.html</code>：Vite 入口</li>
+        <li><code>src/</code>：React 路由、页面与 API 调用</li>
+      </ul>
+    </li>
+    <li><code>cors.json</code> / <code>cors.xml</code> / <code>cred.json</code>：MinIO/S3 CORS 配置示例</li>
+    <li><code>minio-data/</code>、<code>pgdata/</code>：数据卷（本地持久化）</li>
+  </ul>
+
+  <h2>快速开始（本地 Docker）</h2>
+  <ol>
+    <li>确保已安装 Docker 与 docker-compose。</li>
+    <li>在项目根目录执行：
+      <pre><code>docker-compose up -d</code></pre>
+      服务说明：
+      <ul>
+        <li>前端：<a href="http://localhost:5173" target="_blank">http://localhost:5173</a></li>
+        <li>后端：<a href="http://localhost:8088/docs" target="_blank">http://localhost:8088/docs</a>（Swagger）</li>
+        <li>MinIO 控制台：<a href="http://localhost:9001" target="_blank">http://localhost:9001</a>（账密见 <code>docker-compose.yml</code>）</li>
+      </ul>
+    </li>
+    <li>初始化管理员账号（仅本地开发时使用，上线请删除或加保护）：
+      <pre><code>curl -X POST "http://localhost:8088/auth/bootstrap-admin?email=admin@example.com&amp;password=Passw0rd!"</code></pre>
+    </li>
+    <li>前端登录 → 上传 → 在图库中查看或播放。</li>
+  </ol>
+
+  <h2>环境变量要点（<code>.env.dev</code>）</h2>
+  <ul>
+    <li><b>数据库</b>：<code>DB_URL</code> 指向 docker 内的 postgres 服务。</li>
+    <li><b>JWT</b>：<code>JWT_SECRET</code>、<code>JWT_EXPIRE_MIN</code>。</li>
+    <li><b>对象存储</b>：
+      <ul>
+        <li><code>STORAGE_PROVIDER=minio</code>（本地）/ <code>s3</code>（生产）</li>
+        <li><code>S3_ENDPOINT</code>（服务内部访问）、<code>PUBLIC_S3_ENDPOINT</code>（浏览器可访问域名，开发用 <code>http://localhost:9000</code>）</li>
+        <li><code>S3_BUCKET</code>、<code>S3_REGION</code>、<code>S3_ACCESS_KEY</code>、<code>S3_SECRET_KEY</code>、<code>S3_PATH_STYLE</code></li>
+        <li><code>READ_URL_TTL</code>、<code>UPLOAD_URL_TTL</code> 预签名 URL 有效期</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h2>接口概览</h2>
+  <ul>
+    <li><code>POST /auth/login</code>：登录（返回 JWT 与角色）</li>
+    <li><code>POST /auth/bootstrap-admin</code>：初始化管理员（本地调试用）</li>
+    <li><code>POST /media/upload-credential</code>（管理员）：申请直传凭证，返回 <code>PUT</code> 目标 <code>uploadUrl</code> 与必须的 <code>headers</code>、<code>storageKey</code></li>
+    <li><code>POST /media</code>（管理员）：保存媒体元信息（标题/描述/存储键等）</li>
+    <li><code>GET /media</code>（已登录）：分页外的简易列表（按 <code>id</code> 倒序）</li>
+    <li><code>GET /media/{id}</code>（已登录）：详情 + 临时 <code>playUrl</code></li>
+    <li><code>DELETE /media/{id}</code>（管理员）：删除对象与记录</li>
+  </ul>
+  <p class="k">更多细节参见：<code>backend/app/auth/routes.py</code>、<code>backend/app/media/routes.py</code>。</p>
+
+  <h2>直传与播放流程</h2>
+  <ol>
+    <li>管理员调用 <code>/media/upload-credential</code> 获取预签名上传 URL。</li>
+    <li>前端使用 <code>fetch(url, &#123; method:'PUT', headers:{'Content-Type':mime}, body:file &#125;)</code> 直传到 MinIO/S3。</li>
+    <li>直传成功后，调用 <code>POST /media</code> 落库元信息。</li>
+    <li>用户访问列表与详情；详情接口返回临时 <code>playUrl</code> 供 <code>&lt;video&gt;</code> / <code>&lt;img&gt;</code> 播放或预览。</li>
+  </ol>
+
+  <h2>MinIO / S3 设置与 CORS</h2>
+  <ul>
+    <li>开发期已在 <code>docker-compose.yml</code> 中对 MinIO 开启了 CORS 来源：<code>http://localhost:5173</code>。</li>
+    <li>如需手动设置，可参考根目录的 <code>cors.json</code> / <code>cors.xml</code> / <code>cred.json</code> 样例。</li>
+    <li>生产环境建议：
+      <ul>
+        <li>关闭/移除 <code>/auth/bootstrap-admin</code>；</li>
+        <li>将 <code>PUBLIC_S3_ENDPOINT</code> 指向外网域名或 CDN；</li>
+        <li>收紧 MinIO/S3 访问密钥与策略，仅允许必要的 <code>GET/PUT</code>。</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h2>前端与本地开发</h2>
+  <ul>
+    <li>已通过 docker 服务 <code>web</code> 运行开发服务器（Vite，端口 5173）。</li>
+    <li>如需单独起前端：
+      <pre><code>cd frontend
+npm install
+npm run dev -- --host --port 5173</code></pre>
+    </li>
+  </ul>
+
+  <h2>数据库</h2>
+  <ul>
+    <li>PostgreSQL 连接：<code>postgresql://media:strongpass@postgres:5432/media_site</code>（容器网络内）</li>
+    <li>初始化建表在 <code>backend/app/db.py</code> 中完成（<code>users</code> / <code>media</code> 表）。</li>
+    <li>本地数据持久化目录：<code>./pgdata</code>。</li>
+  </ul>
+
+  <h2>注意事项</h2>
+  <ul>
+    <li>默认凭证与密钥仅用于本地开发，请务必在生产修改。</li>
+    <li>带身份的跨域：后端已开启 <code>CORS</code>，<code>allow_credentials=true</code>；开发期仅允许前端来源 <code>http://localhost:5173</code>。</li>
+    <li>对象存储路径风格：<code>S3_PATH_STYLE=true</code> 适配 MinIO；原生 S3 建议设为 <code>false</code>。</li>
+  </ul>
+
+  <hr/>
+  <p class="k">最后更新：自动生成于本地环境；如需扩展或细化，请直接编辑根目录的 <code>README.html</code>。</p>
+</body>
+</html>
