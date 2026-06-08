@@ -1,0 +1,9 @@
+from abc import ABC, abstractmethod
+
+class StorageService(ABC):
+    @abstractmethod
+    def presign_put(self, key:str, content_type:str, ttl:int)->str: ...
+    @abstractmethod
+    def presign_get(self, key:str, ttl:int)->str: ...
+    @abstractmethod
+    def delete(self, key:str)->None: ...
