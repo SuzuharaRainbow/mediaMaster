@@ -1,0 +1,5 @@
+:root { --brand-ink: #7c3aed; --card-surface: rgba(255,255,255,0.92); --card-border: rgba(248,167,208,0.35); --shadow-soft: 0 18px 45px rgba(90,60,120,0.12); }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #fff7fb; color: #322c54; }
+a { color: inherit; text-decoration: none; }
+button, input, select, textarea { font: inherit; }
