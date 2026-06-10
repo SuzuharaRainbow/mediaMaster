@@ -1,14 +1,745 @@
-:root { --brand-ink: #7c3aed; --card-surface: rgba(255,255,255,0.92); --card-border: rgba(248,167,208,0.35); --shadow-soft: 0 18px 45px rgba(90,60,120,0.12); }
-* { box-sizing: border-box; }
-body { margin: 0; font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #fff7fb; color: #322c54; }
-a { color: inherit; text-decoration: none; }
-button, input, select, textarea { font: inherit; }
-.app-shell { min-height: 100vh; }
-.app-topbar { display: flex; align-items: center; justify-content: space-between; padding: 18px 32px; border-bottom: 1px solid rgba(248,167,208,0.35); background: rgba(255,255,255,0.86); }
-.brand-lockup { font-weight: 800; color: var(--brand-ink); }
-.app-nav { display: flex; gap: 18px; }
-.app-main { max-width: 1180px; margin: 0 auto; padding: 32px; }
-.button-primary, .button-secondary { border: 1px solid rgba(248,167,208,0.5); border-radius: 999px; padding: 8px 16px; cursor: pointer; }
-.button-primary { background: var(--brand-ink); color: white; }
-.button-secondary { background: white; color: #322c54; }
-.media-grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+@import url("https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Zen+Maru+Gothic:wght@400;500;700&family=ZCOOL+KuaiLe&display=swap");
+
+:root {
+  --brand-pink: #f8a7d0;
+  --brand-pink-strong: #f276c4;
+  --brand-yellow: #fff444;
+  --brand-lavender: #c9b9ff;
+  --brand-navy: #1f1d3b;
+  --brand-ink: #322c54;
+  --brand-background: #fff6fb;
+  --card-surface: rgba(255, 255, 255, 0.9);
+  --card-border: rgba(248, 167, 208, 0.6);
+  --shadow-soft: 0 18px 40px rgba(248, 167, 208, 0.25);
+  --shadow-header: 0 12px 30px rgba(201, 185, 255, 0.3);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "ZCOOL KuaiLe", "Zen Maru Gothic", "Mochiy Pop One", "Segoe UI", system-ui, sans-serif;
+  background: radial-gradient(circle at top left, rgba(255, 244, 244, 0.9), rgba(255, 255, 244, 0.6)),
+    linear-gradient(140deg, var(--brand-background) 0%, #fff9ff 42%, #fffdfa 100%);
+  color: var(--brand-ink);
+  min-height: 100vh;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("../assets/mascot.png");
+  background-repeat: no-repeat;
+  background-size: 380px;
+  background-position: calc(100% - 80px) 48px;
+  opacity: 0.34;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle at 5% 5%, rgba(255, 244, 241, 0.6) 0, rgba(255, 244, 241, 0) 55%),
+    radial-gradient(circle at 95% 15%, rgba(255, 255, 200, 0.45) 0, rgba(255, 255, 200, 0) 52%),
+    radial-gradient(circle at 30% 85%, rgba(201, 185, 255, 0.45) 0, rgba(201, 185, 255, 0) 60%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.app-root {
+  min-height: 100vh;
+}
+
+.app-shell {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 32px 28px 96px;
+  position: relative;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 18px;
+  padding: 18px 26px;
+  background: var(--card-surface);
+  border: 2px solid var(--brand-pink);
+  border-radius: 22px;
+  box-shadow: var(--shadow-header);
+  backdrop-filter: blur(18px);
+  overflow: hidden;
+}
+
+.app-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.app-logo-badge {
+  width: 62px;
+  height: 62px;
+  border-radius: 22px;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9), rgba(255, 244, 68, 0.85));
+  box-shadow: 0 10px 20px rgba(255, 244, 68, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-logo-icon {
+  width: 74%;
+  height: auto;
+  display: block;
+}
+
+.app-logo-text {
+  font-size: 28px;
+  letter-spacing: 0.04em;
+  font-family: "ZCOOL KuaiLe", "Zen Maru Gothic", sans-serif;
+  color: var(--brand-ink);
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-weight: 700;
+}
+
+.app-logo-text span:first-child {
+  font-weight: 700;
+}
+
+.app-logo-text__jp {
+  font-size: 24px;
+  color: var(--brand-ink);
+  letter-spacing: 0.08em;
+}
+
+.app-nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-left: 24px;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.app-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-link {
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.55);
+  color: var(--brand-ink);
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  font-family: "ZCOOL KuaiLe", "Zen Maru Gothic", sans-serif;
+}
+
+.nav-link.is-active {
+  border-color: var(--brand-pink-strong);
+  background: linear-gradient(120deg, var(--brand-pink) 0%, var(--brand-pink-strong) 100%);
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(242, 118, 196, 0.35);
+}
+
+.nav-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(248, 167, 208, 0.4);
+  font-size: 13px;
+  color: var(--brand-ink);
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-family: "ZCOOL KuaiLe", "Zen Maru Gothic", sans-serif;
+}
+
+.main-content {
+  margin-top: 32px;
+}
+
+.page-header {
+  margin-bottom: 24px;
+}
+
+.page-title {
+  font-family: "ZCOOL KuaiLe", "Zen Maru Gothic", sans-serif;
+  font-size: 38px;
+  margin: 0;
+  color: var(--brand-ink);
+}
+
+.page-subtitle {
+  margin-top: 8px;
+  color: rgba(50, 44, 84, 0.72);
+  font-family: "Zen Maru Gothic", "ZCOOL KuaiLe", sans-serif;
+  font-size: 15px;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.media-card {
+  display: block;
+  text-decoration: none;
+  background: var(--card-surface);
+  border: 1.5px solid var(--card-border);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: var(--shadow-soft);
+  color: inherit;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.media-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 32px rgba(248, 167, 208, 0.35);
+}
+
+.media-card__thumb {
+  width: 100%;
+  height: 170px;
+  border-radius: 14px;
+  background: linear-gradient(125deg, rgba(255, 244, 244, 0.9), rgba(255, 236, 189, 0.9));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.media-card__video-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at center, rgba(255, 244, 244, 0.95), rgba(248, 167, 208, 0.65));
+  color: rgba(31, 29, 59, 0.75);
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.media-card__video-icon {
+  transform: translateX(4px);
+}
+
+.media-card__type {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--brand-pink-strong);
+  margin-bottom: 10px;
+}
+
+.media-card__title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 14px 0 8px;
+}
+
+.media-card__meta {
+  font-size: 13px;
+  color: rgba(50, 44, 84, 0.6);
+}
+
+.button-primary {
+  border: none;
+  background: linear-gradient(120deg, var(--brand-pink) 0%, var(--brand-pink-strong) 100%);
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 14px 28px rgba(242, 118, 196, 0.35);
+  transition: transform 0.15s ease;
+  font-family: "ZCOOL KuaiLe", "Zen Maru Gothic", sans-serif;
+}
+
+.button-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.button-secondary {
+  border: 1px solid rgba(248, 167, 208, 0.5);
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--brand-ink);
+  padding: 9px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: "ZCOOL KuaiLe", "Zen Maru Gothic", sans-serif;
+}
+
+.button-secondary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.form-card {
+  background: var(--card-surface);
+  border: 1.5px solid var(--card-border);
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: var(--shadow-soft);
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+.form-card input,
+.form-card textarea,
+.form-card select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(248, 167, 208, 0.4);
+  background: rgba(255, 255, 255, 0.9);
+  font-size: 15px;
+  margin-top: 4px;
+}
+
+.social-card {
+  border-radius: 22px;
+  padding: 22px;
+  background: linear-gradient(140deg, rgba(31, 29, 59, 0.92), rgba(49, 41, 84, 0.88));
+  color: #fdf5ff;
+  border: 1.5px solid rgba(201, 185, 255, 0.35);
+  box-shadow: 0 16px 38px rgba(31, 29, 59, 0.35);
+  cursor: pointer;
+}
+
+.social-card__header {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.social-card__avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 244, 68, 0.6);
+}
+
+.social-card__stats {
+  display: flex;
+  gap: 16px;
+  color: rgba(255, 244, 244, 0.65);
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+.social-card__media {
+  margin-top: 14px;
+  border-radius: 16px;
+  overflow: hidden;
+  display: grid;
+  gap: 8px;
+}
+
+.social-card__media img,
+.social-card__media video {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 14px;
+}
+
+.social-detail {
+  max-width: 720px;
+  margin: 0 auto;
+  background: var(--card-surface);
+  border-radius: 24px;
+  padding: 32px;
+  border: 1.5px solid rgba(248, 167, 208, 0.45);
+  box-shadow: var(--shadow-soft);
+}
+
+.social-detail__reply {
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 16px;
+  border: 1px solid rgba(248, 167, 208, 0.4);
+  padding: 18px;
+}
+
+.social-detail__reply + .social-detail__reply {
+  margin-top: 14px;
+}
+
+.album-form {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px dashed rgba(248, 167, 208, 0.5);
+  padding: 16px;
+  border-radius: 16px;
+}
+
+.album-form input,
+.album-form select {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(248, 167, 208, 0.45);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.album-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  background: var(--card-surface);
+  border: 1.5px solid var(--card-border);
+  border-radius: 18px;
+  padding: 18px 20px;
+  box-shadow: var(--shadow-soft);
+}
+
+.album-card__thumb {
+  width: 96px;
+  height: 96px;
+  border-radius: 14px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(248, 167, 208, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.album-card__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.album-card__thumb--placeholder {
+  font-size: 12px;
+  color: rgba(50, 44, 84, 0.6);
+}
+
+.album-card__title {
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--brand-ink);
+}
+
+.album-card__meta {
+  font-size: 13px;
+  color: rgba(50, 44, 84, 0.6);
+}
+
+.pill-button {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(248, 167, 208, 0.45);
+  background: rgba(255, 255, 255, 0.92);
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--brand-ink);
+  font-family: "ZCOOL KuaiLe", "Zen Maru Gothic", sans-serif;
+}
+
+.pill-button--danger {
+  border-color: rgba(239, 68, 68, 0.45);
+  background: rgba(254, 226, 226, 0.9);
+  color: #b91c1c;
+}
+
+.toggle-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: 999px;
+  border: 1px solid rgba(248, 167, 208, 0.5);
+  background: rgba(255, 255, 255, 0.8);
+  flex-shrink: 0;
+}
+
+.toggle-pill button {
+  border: none;
+  background: transparent;
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-weight: 600;
+  color: var(--brand-ink);
+  cursor: pointer;
+  font-family: "ZCOOL KuaiLe", "Zen Maru Gothic", sans-serif;
+}
+
+.toggle-pill button.is-active {
+  background: linear-gradient(120deg, var(--brand-pink) 0%, var(--brand-pink-strong) 100%);
+  color: #fff;
+  box-shadow: 0 10px 20px rgba(242, 118, 196, 0.3);
+}
+
+.auth-splash {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 24px;
+}
+
+.auth-splash__card {
+  padding: 32px 36px;
+  border-radius: 28px;
+  background: var(--card-surface);
+  border: 2px solid var(--brand-pink);
+  box-shadow: var(--shadow-soft);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.auth-splash__spinner {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 6px solid rgba(242, 118, 196, 0.25);
+  border-top-color: var(--brand-pink-strong);
+  animation: login-spin 1s linear infinite;
+}
+
+.auth-splash__text {
+  font-family: "ZCOOL KuaiLe", "Zen Maru Gothic", sans-serif;
+  font-size: 18px;
+  color: var(--brand-ink);
+  letter-spacing: 0.08em;
+}
+
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 72px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-page__glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.login-page__glow--one {
+  width: 420px;
+  height: 420px;
+  background: rgba(242, 118, 196, 0.35);
+  top: 12%;
+  left: 4%;
+}
+
+.login-page__glow--two {
+  width: 380px;
+  height: 380px;
+  background: rgba(255, 244, 68, 0.35);
+  bottom: 10%;
+  right: 6%;
+}
+
+.login-card {
+  width: min(440px, 100%);
+  border-radius: 32px;
+  border: 2px solid rgba(248, 167, 208, 0.7);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.95), rgba(255, 246, 251, 0.92));
+  box-shadow: 0 28px 60px rgba(242, 118, 196, 0.25);
+  padding: 42px 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.login-card__brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+  text-align: center;
+}
+
+.login-card__badge {
+  width: 88px;
+  height: 88px;
+  border-radius: 32px;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.95), rgba(255, 244, 68, 0.9));
+  box-shadow: 0 16px 24px rgba(255, 244, 68, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-card__badge img {
+  width: 74%;
+  height: auto;
+  display: block;
+}
+
+.login-card__title {
+  margin: 0;
+  font-size: 36px;
+  letter-spacing: 0.12em;
+  color: var(--brand-ink);
+  font-family: "Mochiy Pop One", "ZCOOL KuaiLe", sans-serif;
+}
+
+.login-card__subtitle {
+  margin: 0;
+  font-size: 15px;
+  color: rgba(50, 44, 84, 0.72);
+  font-family: "Zen Maru Gothic", "ZCOOL KuaiLe", sans-serif;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.login-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-family: "Zen Maru Gothic", "ZCOOL KuaiLe", sans-serif;
+  color: rgba(50, 44, 84, 0.9);
+}
+
+.login-field input {
+  border-radius: 14px;
+  border: 1.5px solid rgba(248, 167, 208, 0.55);
+  padding: 12px 14px;
+  font-size: 16px;
+  font-family: inherit;
+  background: rgba(255, 255, 255, 0.98);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-field input:focus {
+  outline: none;
+  border-color: var(--brand-pink-strong);
+  box-shadow: 0 0 0 4px rgba(242, 118, 196, 0.15);
+}
+
+.login-field input:disabled {
+  opacity: 0.65;
+}
+
+.login-error {
+  background: rgba(220, 38, 58, 0.12);
+  border: 1px solid rgba(220, 38, 58, 0.4);
+  color: #c7162b;
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-size: 14px;
+  text-align: center;
+  font-family: "Zen Maru Gothic", sans-serif;
+}
+
+.login-info {
+  background: rgba(255, 244, 68, 0.18);
+  border: 1px solid rgba(255, 244, 68, 0.4);
+  color: rgba(50, 44, 84, 0.85);
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-size: 14px;
+  text-align: center;
+  font-family: "Zen Maru Gothic", sans-serif;
+}
+
+.login-submit {
+  margin-top: 4px;
+  padding: 14px 18px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(120deg, var(--brand-pink) 0%, var(--brand-pink-strong) 100%);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: "ZCOOL KuaiLe", "Zen Maru Gothic", sans-serif;
+  box-shadow: 0 16px 26px rgba(242, 118, 196, 0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.2s ease;
+}
+
+.login-submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.login-submit:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 32px rgba(242, 118, 196, 0.35);
+}
+
+.login-hint {
+  margin-top: 28px;
+  text-align: center;
+  font-size: 13px;
+  color: rgba(50, 44, 84, 0.7);
+  font-family: "Zen Maru Gothic", sans-serif;
+}
+
+@keyframes login-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .app-shell {
+    padding: 24px 18px 72px;
+  }
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .app-nav {
+    flex-wrap: wrap;
+  }
+  .social-detail {
+    padding: 24px;
+  }
+}
+.app-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: 24px;
+  flex-shrink: 0;
+}
